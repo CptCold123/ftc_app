@@ -12,8 +12,8 @@ import com.qualcomm.robotcore.util.Range;
 //@Disabled
 public class DriverControl extends LinearOpMode {
     private DcMotor lMotor, rMotor, pulleyMotor, extenderMotor;
-    Servo grab1, grab2;
-    CRServo slider1, slider2;
+    private Servo grab1, grab2;
+    private CRServo slider1, slider2;
     float lPower, rPower, xValue, yValue;
     double grab1Pos, grab2Pos, slider1power, slider2power;
 
@@ -30,7 +30,7 @@ public class DriverControl extends LinearOpMode {
         grab2 = hardwareMap.servo.get("Grab2");
         slider1 = hardwareMap.crservo.get("Slider1");
         slider2 = hardwareMap.crservo.get("Slider2");
-        grab2.setDirection(Servo.Direction.REVERSE);
+        //grab2.setDirection(Servo.Direction.REVERSE);
         slider2.setDirection(CRServo.Direction.REVERSE);
 
         telemetry.addData("Mode", "waiting");
@@ -39,7 +39,7 @@ public class DriverControl extends LinearOpMode {
         waitForStart();
 
         grab1Pos = 0.5;
-        grab2Pos = 0.5;
+        grab2Pos = -0.5;
 
         while (opModeIsActive()) {
             yValue = gamepad1.right_stick_y;
@@ -55,9 +55,12 @@ public class DriverControl extends LinearOpMode {
             if (gamepad1.x && grab1Pos < Servo.MAX_POSITION) grab1Pos = grab1Pos + .01;
             if (gamepad1.x && grab2Pos < Servo.MAX_POSITION) grab2Pos = grab2Pos + .01;
 
+
             // close the grabber on Y button if not already at the closed position.
             if (gamepad1.y && grab1Pos > Servo.MIN_POSITION) grab1Pos = grab1Pos - .01;
             if (gamepad1.y && grab2Pos > Servo.MIN_POSITION) grab2Pos = grab2Pos - .01;
+
+
 
             // Set continuous servo power level and direction.
             if (gamepad1.a) {
@@ -66,10 +69,10 @@ public class DriverControl extends LinearOpMode {
             }else if (gamepad1.b) {
                 slider1power = -.20;
                 slider2power = -.20;
-            }else
+            }else {
                 slider1power = 0.0;
                 slider2power = 0.0;
-
+            }
             // set the servo position/power values as we have computed them.
             grab1.setPosition(Range.clip(grab1Pos, Servo.MIN_POSITION, Servo.MAX_POSITION));
             grab2.setPosition(Range.clip(grab2Pos, Servo.MIN_POSITION, Servo.MAX_POSITION));
